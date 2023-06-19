@@ -1,11 +1,13 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox
+from tkinter import filedialog, messagebox, scrolledtext
 import json
 import os
+from click import open_file
 import pyperclip
 
 from file_summarizer import FileSummarizer
 from file_downloader import FileDownloader
+
 
 from dotenv import load_dotenv
 #from cd_summary import parse_title_summary_results
@@ -14,7 +16,7 @@ class App:
     def __init__(self, root):
         self.root = root
         self.root.title("Summarizer App")
-        self.root.geometry('550x350')
+        self.root.geometry('600x400')
         self.sources = ["File", "Clipboard", "URL"]
         self.summary_methods = ['Simple','MapReduce']
 
@@ -177,14 +179,31 @@ class App:
             except Exception as e:
                 messagebox.showerror("Error", str(e))
                 print(e)
+        else: # File
+            full_content_path = self.file_path
+            #
 
-        self.summarize_file(self,full_content_path)
+        self.summarize_file(full_content_path)
 
     def summarize_file(self, full_content_path):
         summarizer = FileSummarizer()
-        summary = summarizer.summarize_file(full_content_path, 'method1')
+        summary_path = summarizer.summarize_file(full_content_path, self.summary_method_var.get(), self.dest_dir)
+        self.open_file(summary_path)
 
+    def open_file(self, summary_path):
+        if summary_path:
+            new_window = tk.Toplevel(root)
+            new_window.title(summary_path)
 
+            # Set the window size. Width=800 and Height=600
+            new_window.geometry("800x600")
+
+            text_area = scrolledtext.ScrolledText(new_window, wrap = tk.WORD)
+            text_area.pack(padx = 10, pady = 10, expand=True, fill='both')
+
+            with open(summary_path, 'r') as file_content:
+                text = file_content.read()
+            text_area.insert(tk.INSERT, text)
 
 
 

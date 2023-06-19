@@ -1,5 +1,6 @@
 credentials.json
 token.json
+settings.json
 *.txt
 
 # Byte-compiled / optimized / DLL files

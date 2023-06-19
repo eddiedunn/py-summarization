@@ -11,11 +11,11 @@ from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTex
 
 
 class FileSummarizer:
-    def __init__(self):
+    def __init__(self, model_var, max_tokens):
         # Load the .env file
         load_dotenv()
-        self.context_window_size = int(os.getenv('CONTEXT_WINDOW_SIZE'))
-        self.llm = OpenAI(temperature=0, openai_api_key=os.getenv('OPENAI_API_KEY'))
+        self.max_tokens = max_tokens
+        self.llm = OpenAI(temperature=0, model=model_var, openai_api_key=os.getenv('OPENAI_API_KEY'))
         self.one_shot_ratio = 0.75
 
 
@@ -45,7 +45,7 @@ class FileSummarizer:
             }
         }
 
-        if num_tokens < int(self.context_window_size*self.one_shot_ratio):
+        if num_tokens < int(self.max_tokens*self.one_shot_ratio):
             size_category = 'small'
         else:
             size_category = 'large'
@@ -97,7 +97,7 @@ class FileSummarizer:
             length_function = len,
         )
 
-        
+
         # TODO: Implement the map-reduce method for large file summarization.
         pass
 

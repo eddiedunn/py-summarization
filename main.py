@@ -2,12 +2,10 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext
 import json
 import os
-from click import open_file
-from numpy import save
-import pyperclip
 
 from file_summarizer import FileSummarizer
 from file_downloader import FileDownloader
+from file_transcriber import FileTranscriber
 
 
 from dotenv import load_dotenv
@@ -127,6 +125,7 @@ class App:
         model = next((m for m in self.models if m["model_name"] == model_name), None)
         if model is not None:
             self.max_tokens = model["max_tokens"]
+            self.endpoint = model["endpoint"]
             self.save_settings()  # save settings every time a new model is selected
         else:
             raise ValueError(f"No model found with the name {model_name}")
@@ -209,7 +208,7 @@ class App:
     def summarize(self):
         source_type = self.source_var.get()
         
-
+        is_clipboard = False
         if source_type == 'URL':
             try:
                 file_dl = FileDownloader(self.dest_dir)
@@ -218,27 +217,17 @@ class App:
             except Exception as e:
                 messagebox.showerror("Error", str(e))
         elif source_type == 'Clipboard':
-            try:
-                # Read from clipboard
-                clipboard_content = pyperclip.paste()
-                filename = self.clipboard_filename_input.get()
-                if not filename:
-                    filename='clipboard_content.txt'
-                # Write to a file
-                full_path = os.path.join(self.dest_dir, filename )
-
-                with open(full_path, 'w') as f:
-                    f.write(clipboard_content)
-                messagebox.showinfo("Information", f"Clipboard saved to:  {full_path}")
-            except Exception as e:
-                messagebox.showerror("Error", str(e))
-                print(e)
+            is_clipboard = True
+            full_content_path = self.clipboard_filename_input.get()
         else: # File
             full_content_path = self.file_path
-            #
+
+        transcriber = FileTranscriber(self.dest_dir)
+        full_content_path = transcriber.transcribe(full_content_path, is_clipboard)
 
         self.summarize_file(full_content_path)
 
+            
     def summarize_file(self, full_content_path):
         summarizer = FileSummarizer(self.model_var.get(), self.max_tokens)
         summary_path = summarizer.summarize_file(full_content_path, 

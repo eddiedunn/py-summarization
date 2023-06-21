@@ -152,30 +152,4 @@ class FileDownloader:
         return full_filepath
 
 
-    def convert_to_text(self, file_path):
-        # Check if the file exists
-        if not os.path.isfile(file_path):
-            print("File does not exist")
-            return
-        new_path = file_path
-        # Get the extension
-        base, ext = os.path.splitext(file_path)
-        
-        # If it is a pdf file, convert it to text and write it to a new text file
-        if ext.lower() == '.pdf':
-            doc = fitz.open(file_path)
-            text = ""
-            for page in doc:
-                text += page.get_text()
-                new_path = base + '.txt'
-            with open(base + '.txt', 'w') as f:
-                f.write(text)
 
-        # If it is a text file, do nothing
-        elif ext.lower() == '.txt':
-            pass
-
-        else:
-            print("File is not a PDF or TXT")
-        
-        return new_path

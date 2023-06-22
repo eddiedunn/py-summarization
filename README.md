@@ -51,7 +51,7 @@ python main.py
 8. Select the desired summary method and language model from the respective dropdown menus.
 9. Click the "Summarize" button to initiate the summarization process.
 10. The summarized output will be saved in the specified destination directory.
-11. To view the summarized content, click the "Open File" button in the application window.
+11. The summarized file will open in a new window.
 
 ## File Structure
 

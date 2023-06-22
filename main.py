@@ -22,8 +22,8 @@ class App:
         # Set the root window properties
         self.root = root
         self.root.title("Summarizer App")
-        self.root.geometry('700x500')
-        self.root.minsize(700, 500)
+        self.root.geometry('600x400')
+        self.root.minsize(600, 400)
 
         # Use ttk styles for a more modern look
         style = ttk.Style(self.root)
@@ -32,15 +32,18 @@ class App:
         # Set default grid padding
         padding = {"padx": 10, "pady": 10}
 
-        self.sources = ["File", "Clipboard", "URL"]
+        self.sources = ["", "File", "Clipboard", "URL"]
         self.summary_methods = ['Simple','MapReduce']
 
         # Source selector label and dropdown
         self.source_label = ttk.Label(self.root, text="Source")
         self.source_label.grid(row=0, column=0, **padding)
         self.source_var = tk.StringVar(self.root)
-        self.source_selector = ttk.OptionMenu(self.root, self.source_var, *self.sources, command=self.update_source)
+        
+        self.source_selector = ttk.OptionMenu(self.root, self.source_var, *self.sources)
         self.source_selector.grid(row=0, column=1, **padding)
+        self.source_var.set(self.sources[2]) # set default value
+        self.source_var.trace('w', self.update_source)
 
         # File selector label
         self.file_label = ttk.Label(self.root, text="File")
@@ -140,10 +143,10 @@ class App:
         else:
             raise ValueError(f"No model found with the name {model_name}")
 
-    def update_source(self, source_type):
-        self.source_type = source_type
-        self.update_widgets(source_type)
-        self.save_settings()  # save settings every time a new source type is selected
+    def update_source(self, name, index, mode):
+        self.source_type = self.source_var.get()
+        self.update_widgets(self.source_type)
+        self.save_settings() # save settings every time a new source type is selected
 
     def update_summary_method(self, summary_method):
         self.summary_method = summary_method
@@ -220,12 +223,16 @@ class App:
         
         is_clipboard = False
         if source_type == 'URL':
-            try:
-                file_dl = FileDownloader(self.dest_dir)
-                full_content_path = file_dl.download_full_content(self.url_input_field.get())
-                messagebox.showinfo("Information", f"URL downloaded successfully to {full_content_path}!")
-            except Exception as e:
-                messagebox.showerror("Error", str(e))
+            url = self.url_input_field.get()
+            if url.startswith('/'):
+                full_content_path = url
+            else:
+                try:
+                    file_dl = FileDownloader(self.dest_dir)
+                    full_content_path = file_dl.download_full_content(url)
+                    messagebox.showinfo("Information", f"URL downloaded successfully to {full_content_path}!")
+                except Exception as e:
+                    messagebox.showerror("Error", str(e))
         elif source_type == 'Clipboard':
             is_clipboard = True
             full_content_path = self.clipboard_filename_input.get()

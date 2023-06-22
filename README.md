@@ -2,6 +2,15 @@
 
 Summarizer App is a Python application written for Linux that allows you to summarize text from different sources such as files, clipboard, or URLs. The app provides a user-friendly interface built with the Tkinter library.
 
+Currently it can deal with:
+
+ - **Web pages**
+ - **PDF Files**
+ - **Text Files**
+ - **Youtube URLS** Downloads transcripts
+ - **Audio/Video Files** Creates transcript of audio using OpenAI whisper
+ - **Local Files**
+
 ## Features
 
 - **Source selection**: You can choose the source of the text you want to summarize, including file, clipboard, or URL.

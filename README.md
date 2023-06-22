@@ -2,6 +2,10 @@
 
 Summarizer App is a Python application written for Linux that allows you to summarize text from different sources such as files, clipboard, or URLs using langchain and OpenAI models. The app provides a user-friendly interface built with the Tkinter library.
 
+The intent is to add lots of different summarization methods over time. 
+
+Note: Try the OpenAI Video Insights plug-in if you can for youtube videos. It rocks.
+
 Currently it can deal with local or downloaded files:
 
  - **Web pages** (download only) Extracts text using Beautiful Soup
@@ -76,9 +80,9 @@ The project contains the following files:
 - `main.py`: The main script that initializes the Summarizer App and handles the GUI interactions.
 - `file_summarizer.py`: A module that provides the functionality to summarize files using different methods.
 - `file_downloader.py`: A module that handles downloading files from URLs.
-- `file_transcriber.py`: A module that handles transcribing audio/video files and clipboard content.
+- `file_transcriber.py`: A module that handles transcribing audio/video files, pdf files, and clipboard content.
 - `settings.json`: A JSON file that stores the previous settings of the application.
-- `models.json`: A JSON file that stores the available language models for summarization.
+- `models.json`: A JSON file that stores the available OpenAI language models for use in summarization.
 
 ## Acknowledgments
 

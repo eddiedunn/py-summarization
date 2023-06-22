@@ -1,5 +1,4 @@
 
-from lib2to3.pytree import convert
 from youtube_transcript_api import YouTubeTranscriptApi
 from googleapiclient.discovery import build
 import os
@@ -7,7 +6,6 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from urllib.parse import unquote
-import fitz
 
 from urllib.parse import urlparse, parse_qs
 

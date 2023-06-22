@@ -2,14 +2,14 @@
 
 Summarizer App is a Python application written for Linux that allows you to summarize text from different sources such as files, clipboard, or URLs. The app provides a user-friendly interface built with the Tkinter library.
 
-Currently it can deal with:
+Currently it can deal with local or downloaded files:
 
- - **Web pages**
- - **PDF Files**
+ - **Web pages** (download only) Extracts text using Beautiful Soup
+ - **PDF Files** Extracts using PyMuPDF 
  - **Text Files**
- - **Youtube URLS** Downloads transcripts
+ - **Youtube URLS** Downloads transcripts using youtube_transcript_api and google-api-python-client
  - **Audio/Video Files** Creates transcript of audio using OpenAI whisper
- - **Local Files**
+
 
 ## Features
 
@@ -35,7 +35,7 @@ Before running the application, make sure you have the following dependencies in
 You can install the dependencies by running the following command:
 
 ```bash
-pip install tkinter python-dotenv whisper pymupdf pyperclip
+pip install tkinter python-dotenv whisper pymupdf pyperclip bs4 youtube-transcript-api google-api-python-client langchain openai
 ```
 
 ## Usage

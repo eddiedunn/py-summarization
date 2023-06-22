@@ -9,7 +9,6 @@ from file_transcriber import FileTranscriber
 
 
 from dotenv import load_dotenv
-#from cd_summary import parse_title_summary_results
 
 class App:
     def __init__(self, root):

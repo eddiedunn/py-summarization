@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox, scrolledtext
+from tkinter import filedialog, messagebox, scrolledtext, ttk
 import json
 import os
 
@@ -19,72 +19,82 @@ class App:
             self.models = json.load(f)
         self.model_names = [model['model_name'] for model in self.models]
 
+        # Set the root window properties
         self.root = root
         self.root.title("Summarizer App")
         self.root.geometry('700x500')
+        self.root.minsize(700, 500)
+
+        # Use ttk styles for a more modern look
+        style = ttk.Style(self.root)
+        style.theme_use('clam')  # Use the 'clam' theme if available
+
+        # Set default grid padding
+        padding = {"padx": 10, "pady": 10}
+
         self.sources = ["File", "Clipboard", "URL"]
         self.summary_methods = ['Simple','MapReduce']
 
         # Source selector label and dropdown
-        self.source_label = tk.Label(self.root, text="Source")
-        self.source_label.grid(row=0, column=0, pady=10)
+        self.source_label = ttk.Label(self.root, text="Source")
+        self.source_label.grid(row=0, column=0, **padding)
         self.source_var = tk.StringVar(self.root)
-        self.source_selector = tk.OptionMenu(self.root, self.source_var, *self.sources, command=self.update_source)
-        self.source_selector.grid(row=0, column=1, pady=10)
+        self.source_selector = ttk.OptionMenu(self.root, self.source_var, *self.sources, command=self.update_source)
+        self.source_selector.grid(row=0, column=1, **padding)
 
         # File selector label
-        self.file_label = tk.Label(self.root, text="File")
-        self.file_label.grid(row=1, column=0, pady=10)
+        self.file_label = ttk.Label(self.root, text="File")
+        self.file_label.grid(row=1, column=0, **padding)
 
         # File path label
-        self.file_path_label = tk.Label(self.root, text="")
-        self.file_path_label.grid(row=1, column=1, pady=10)
+        self.file_path_label = ttk.Label(self.root, text="")
+        self.file_path_label.grid(row=1, column=1, **padding)
 
         # File selector button
-        self.file_selector_btn = tk.Button(self.root, text="Select File:", command=self.select_file)
+        self.file_selector_btn = ttk.Button(self.root, text="Select File:", command=self.select_file)
         self.file_selector_btn.grid(row=2, column=1)
 
         # Add clipboard filename input field label and entry
-        self.clipboard_filename_label = tk.Label(self.root, text="Filename for Clipboard Content:")
-        self.clipboard_filename_input = tk.Entry(self.root)
-        self.clipboard_filename_label.grid(row=1, column=0, pady=10)
-        self.clipboard_filename_input.grid(row=1, column=1, pady=10)
+        self.clipboard_filename_label = ttk.Label(self.root, text="Filename for Clipboard Content:")
+        self.clipboard_filename_input = ttk.Entry(self.root)
+        self.clipboard_filename_label.grid(row=1, column=0, **padding)
+        self.clipboard_filename_input.grid(row=1, column=1, **padding)
 
         # URL input field label and entry
-        self.url_label = tk.Label(self.root, text="URL")
-        self.url_label.grid(row=2, column=0, pady=10)
-        self.url_input_field = tk.Entry(self.root)
-        self.url_input_field.grid(row=2, column=1, pady=10)
+        self.url_label = ttk.Label(self.root, text="URL")
+        self.url_label.grid(row=2, column=0, **padding)
+        self.url_input_field = ttk.Entry(self.root)
+        self.url_input_field.grid(row=2, column=1, **padding)
 
         # Destination selector label and button
-        self.dest_label = tk.Label(self.root, text="Destination:")
-        self.dest_label.grid(row=3, column=0, pady=10)
+        self.dest_label = ttk.Label(self.root, text="Destination:")
+        self.dest_label.grid(row=3, column=0, **padding)
 
         # Destination path label
-        self.dest_path_label = tk.Label(self.root, text="")
-        self.dest_path_label.grid(row=3, column=1, columnspan=2, pady=10)
+        self.dest_path_label = ttk.Label(self.root, text="")
+        self.dest_path_label.grid(row=3, column=1, columnspan=2, **padding)
 
-        self.dest_selector_btn = tk.Button(self.root, text="Select Destination:", command=self.select_dest)
+        self.dest_selector_btn = ttk.Button(self.root, text="Select Destination:", command=self.select_dest)
         self.dest_selector_btn.grid(row=4, column=1)
 
         # Summary Method selector label and dropdown
-        self.summary_method_label = tk.Label(self.root, text="Summary Method:")
-        self.summary_method_label.grid(row=5, column=0, pady=10)
+        self.summary_method_label = ttk.Label(self.root, text="Summary Method:")
+        self.summary_method_label.grid(row=5, column=0, **padding)
         self.summary_method_var = tk.StringVar(self.root)
-        self.summary_method_selector = tk.OptionMenu(self.root, self.summary_method_var, *self.summary_methods, command=self.update_summary_method)
-        self.summary_method_selector.grid(row=5, column=1, pady=10)
+        self.summary_method_selector = ttk.OptionMenu(self.root, self.summary_method_var, *self.summary_methods, command=self.update_summary_method)
+        self.summary_method_selector.grid(row=5, column=1, **padding)
 
         # Model selector label and dropdown
-        self.model_label = tk.Label(self.root, text="Select Model:")
-        self.model_label.grid(row=6, column=0, pady=10)
+        self.model_label = ttk.Label(self.root, text="Select Model:")
+        self.model_label.grid(row=6, column=0, **padding)
         self.model_var = tk.StringVar(self.root)
         self.model_var.set(self.model_names[0])  # default value
-        self.model_selector = tk.OptionMenu(self.root, self.model_var, *self.model_names, command=self.update_model)
-        self.model_selector.grid(row=6, column=1, pady=10)
+        self.model_selector = ttk.OptionMenu(self.root, self.model_var, *self.model_names, command=self.update_model)
+        self.model_selector.grid(row=6, column=1, **padding)
         
 
         # Summarize button
-        self.summarize_btn = tk.Button(self.root, text="Summarize", command=self.summarize)
+        self.summarize_btn = ttk.Button(self.root, text="Summarize", command=self.summarize)
         self.summarize_btn.grid(row=7, column=0, columnspan=2, pady=30)
 
 

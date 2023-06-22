@@ -74,6 +74,6 @@ The Summarizer App uses the following libraries:
 - fitz: A library for PDF text extraction.
 - pyperclip: A library for clipboard interaction.
 
-License
+## License
 
 This project is licensed under the MIT License.

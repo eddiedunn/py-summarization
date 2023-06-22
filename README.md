@@ -73,3 +73,7 @@ The Summarizer App uses the following libraries:
 - whisper: A library for audio/video transcription.
 - fitz: A library for PDF text extraction.
 - pyperclip: A library for clipboard interaction.
+
+License
+
+This project is licensed under the MIT License.

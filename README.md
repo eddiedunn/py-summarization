@@ -27,9 +27,15 @@ Currently it can deal with local or downloaded files:
 Before running the application, make sure you have the following dependencies installed:
 
 - tkinter: This library is used for the graphical user interface.
+- openai: This library is used for LLM models (requires API key)
+- langchain: This library is used to make the process easier
+- Beautiful Soup: This is used to extact text from web pages.
 - dotenv: This library is used to load environment variables from the .env file.
 - whisper: This library is used for audio/video transcription.
 - fitz: This library is used for PDF text extraction.
+- youtube_transcript_api: Used to download Youtube transcripts
+- google-api-python-client: Used to get Titles and Channel Names from Youtube videos (requires API key)
+- pymupdf: Used to extract text from pdf files
 - pyperclip: This library is used for clipboard interaction.
 
 You can install the dependencies by running the following command:
@@ -45,6 +51,7 @@ pip install tkinter python-dotenv whisper pymupdf pyperclip bs4 youtube-transcri
 
 ```bash
 OPENAI_API_KEY=your-api-key
+GOOGLE_API_KEY=your-google-api-key
 ```
 
 3. Run the main.py file:

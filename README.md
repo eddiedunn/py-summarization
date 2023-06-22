@@ -1,6 +1,6 @@
 # Summarizer App
 
-Summarizer App is a Python application written for Linux that allows you to summarize text from different sources such as files, clipboard, or URLs. The app provides a user-friendly interface built with the Tkinter library.
+Summarizer App is a Python application written for Linux that allows you to summarize text from different sources such as files, clipboard, or URLs using langchain and OpenAI models. The app provides a user-friendly interface built with the Tkinter library.
 
 Currently it can deal with local or downloaded files:
 

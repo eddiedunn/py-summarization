@@ -32,7 +32,7 @@ class App:
         padding = {"padx": 10, "pady": 10}
 
         self.sources = ["", "File", "Clipboard", "URL"]
-        self.summary_methods = ['Simple','MapReduce']
+        self.summary_methods = ["", 'Simple','MapReduce']
 
         # Source selector label and dropdown
         self.source_label = ttk.Label(self.root, text="Source")
@@ -224,7 +224,7 @@ class App:
             'summary_method': self.summary_method_var.get()
         }
         with open('settings.json', 'w') as f:
-            json.dump(settings, f)
+            json.dump(settings, f, indent=1)
 
 
     def summarize(self):

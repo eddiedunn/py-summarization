@@ -1,12 +1,14 @@
 import whisper 
 import os
+import json
+import sys
 import fitz
 import pyperclip
 
 class FileTranscriber:
 
     def __init__(self, dest_dir):
-        self.model = "base"
+        self.model_name = "base"
         self.dest_dir = dest_dir
         
 
@@ -17,7 +19,7 @@ class FileTranscriber:
         text_to_return = ""
         if extension.lower() in ['.mp3', '.wav', '.mp4', '.avi', '.mov', '.flv', '.wmv']:
             # transcribe audio/video file
-            speech_to_text = whisper.load_model(self.model)
+            speech_to_text = whisper.load_model(self.model_name)
             text_to_return = speech_to_text.transcribe(file_to_transcribe)["text"]
         elif is_clipboard:
             if not filename:
@@ -61,3 +63,24 @@ class FileTranscriber:
         
         return text
     
+def main(file_to_transcribe):
+    # Load settings from 'settings.json'
+    with open('settings.json', 'r') as settings_file:
+        settings = json.load(settings_file)
+
+    # Get the destination directory from settings
+    dest_dir = settings['destination_directory']
+
+    # Initialize the FileTranscriber
+    transcriber = FileTranscriber(dest_dir)
+
+    # Perform the file transcription
+    return transcriber.transcribe(file_to_transcribe)
+
+# If this script is being run from the command line
+if __name__ == '__main__':
+    # Ensure a file path was provided
+    if len(sys.argv) < 2:
+        print("Please provide a file path to be transcribed.")
+    else:
+        print(main(sys.argv[1]))  # sys.argv[1] contains the second argument provided to the script

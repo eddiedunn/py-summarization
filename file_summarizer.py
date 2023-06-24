@@ -1,4 +1,6 @@
 import os
+import json
+import sys
 
 from dotenv import load_dotenv
 from langchain.chat_models import ChatOpenAI
@@ -157,3 +159,40 @@ class FileSummarizer:
             f.write(summary_text)
 
         return full_output_path
+    
+def main(full_content_path):
+    # Load settings from 'settings.json'
+    with open('settings.json', 'r') as settings_file:
+        settings = json.load(settings_file)
+
+    # Load model details from 'openai_llm_models.json'
+    with open('openai_llm_models.json', 'r') as models_file:
+        models = json.load(models_file)
+
+    # Get the model details for the model specified in the settings
+    model_details = next((model for model in models if model['model_name'] == settings['model_name']), None)
+
+    # If the model details are not found, throw an error
+    if not model_details:
+        raise ValueError(f"Model details for model {settings['model_name']} not found in 'models.json'")
+
+    # Generate the path to save
+    path_to_save = os.path.dirname(full_content_path)
+
+    # Initialize the FileSummarizer
+    summarizer = FileSummarizer(model_details['model_name'], model_details['max_tokens'])
+
+    # Perform the file summarization
+    return summarizer.summarize_file(
+        full_content_path, 
+        settings['summary_method'], 
+        path_to_save
+    )
+    
+# If this script is being run from the command line
+if __name__ == '__main__':
+    # Ensure a file path was provided
+    if len(sys.argv) < 2:
+        print("Please provide a file path to be summarized.")
+    else:
+        print(main(sys.argv[1])) # sys.argv[1] contains the second argument provided to the script

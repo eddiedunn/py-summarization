@@ -4,6 +4,8 @@ from googleapiclient.discovery import build
 import os
 import requests
 import re
+import json
+import sys
 from bs4 import BeautifulSoup
 from urllib.parse import unquote
 
@@ -151,3 +153,24 @@ class FileDownloader:
 
 
 
+def main(url_to_download):
+    # Load settings from 'settings.json'
+    with open('settings.json', 'r') as settings_file:
+        settings = json.load(settings_file)
+
+    # Get the destination directory from settings
+    dest_dir = settings['destination_directory']
+
+    # Initialize the FileDownloader
+    downloader = FileDownloader(dest_dir)
+
+    # Perform the file download
+    return downloader.download_full_content(url_to_download)
+
+# If this script is being run from the command line
+if __name__ == '__main__':
+    # Ensure a URL was provided
+    if len(sys.argv) < 2:
+        print("Please provide a URL to be downloaded.")
+    else:
+        print(main(sys.argv[1]))  # sys.argv[1] contains the second argument provided to the script

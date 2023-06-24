@@ -42,10 +42,30 @@ Before running the application, make sure you have the following dependencies in
 - pymupdf: Used to extract text from pdf files
 - pyperclip: This library is used for clipboard interaction.
 
-You can install the dependencies by running the following command:
+You need to install `ffmpeg for openai-whisper
 
 ```bash
-pip install tkinter python-dotenv whisper pymupdf pyperclip bs4 youtube-transcript-api google-api-python-client langchain openai
+# on Ubuntu or Debian
+sudo apt update && sudo apt install ffmpeg
+
+# on Arch Linux
+sudo pacman -S ffmpeg
+
+# on MacOS using Homebrew (https://brew.sh/)
+brew install ffmpeg
+
+# on Windows using Chocolatey (https://chocolatey.org/)
+choco install ffmpeg
+
+# on Windows using Scoop (https://scoop.sh/)
+scoop install ffmpeg
+
+```
+
+You can install the python dependencies by running the following command:
+
+```bash
+pip install python-dotenv openai-whisper pymupdf pyperclip bs4 youtube-transcript-api google-api-python-client langchain openai
 ```
 
 ## Usage

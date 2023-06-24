@@ -1,0 +1,51 @@
+[
+    {
+      "model_name": "tiny.en",
+      "required_vram": "~1 GB",
+      "relative_speed": "~32x",
+      "english_only": true
+    },
+    {
+      "model_name": "tiny",
+      "required_vram": "~1 GB",
+      "relative_speed": "~32x",
+      "english_only": false
+    },
+    {
+      "model_name": "base.en",
+      "required_vram": "~1 GB",
+      "relative_speed": "~16x",
+      "english_only": true
+    },
+    {
+      "model_name": "base",
+      "required_vram": "~1 GB",
+      "relative_speed": "~16x",
+      "english_only": false
+    },
+    {
+      "model_name": "small.en",
+      "required_vram": "~2 GB",
+      "relative_speed": "~6x",
+      "english_only": true
+    },
+    {
+      "model_name": "small",
+      "required_vram": "~2 GB",
+      "relative_speed": "~6x",
+      "english_only": false
+    },
+    {
+      "model_name": "medium.en",
+      "required_vram": "~5 GB",
+      "relative_speed": "~2x",
+      "english_only": true
+    },
+    {
+      "model_name": "medium",
+      "required_vram": "~5 GB",
+      "relative_speed": "~2x",
+      "english_only": false
+    }
+  ]
+  

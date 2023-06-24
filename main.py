@@ -13,16 +13,16 @@ from dotenv import load_dotenv
 class App:
     def __init__(self, root):
 
-        # Load the models.json file
-        with open('models.json', 'r') as f:
+        # Load the openai_llm_models.json file
+        with open('openai_llm_models.json', 'r') as f:
             self.models = json.load(f)
         self.model_names = [model['model_name'] for model in self.models]
 
         # Set the root window properties
         self.root = root
         self.root.title("Summarizer App")
-        self.root.geometry('600x400')
-        self.root.minsize(600, 400)
+        self.root.geometry('600x450')
+        self.root.minsize(600, 450)
 
         # Use ttk styles for a more modern look
         style = ttk.Style(self.root)
@@ -97,8 +97,12 @@ class App:
 
         # Summarize button
         self.summarize_btn = ttk.Button(self.root, text="Summarize", command=self.summarize)
-        self.summarize_btn.grid(row=7, column=0, columnspan=2, pady=30)
+        self.summarize_btn.grid(row=7, column=0, columnspan=2, **padding)
 
+        # Transcribe checkbox
+        self.transcribe_var = tk.IntVar()
+        self.transcribe_checkbox = ttk.Checkbutton(self.root, text="Transcribe Only", variable=self.transcribe_var, command=self.update_button_text)
+        self.transcribe_checkbox.grid(row=8, column=0, columnspan=2, **padding)
 
 
         # Load previous settings if available
@@ -132,6 +136,12 @@ class App:
 
         self.update_widgets(self.source_var.get())
         self.update_dest_label()
+
+    def update_button_text(self):
+        if self.transcribe_var.get() == 1:
+            self.summarize_btn.config(text="Transcribe")
+        else:
+            self.summarize_btn.config(text="Summarize")
 
     def update_model(self, model_name):
         model = next((m for m in self.models if m["model_name"] == model_name), None)
@@ -241,7 +251,8 @@ class App:
         transcriber = FileTranscriber(self.dest_dir)
         full_content_path = transcriber.transcribe(full_content_path, is_clipboard)
 
-        self.summarize_file(full_content_path)
+        if self.transcribe_var.get() == 0:
+            self.summarize_file(full_content_path)
 
             
     def summarize_file(self, full_content_path):

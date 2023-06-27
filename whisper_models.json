@@ -46,6 +46,12 @@
       "required_vram": "~5 GB",
       "relative_speed": "~2x",
       "english_only": false
+    },
+    {
+      "model_name": "large",
+      "required_vram": "~10 GB",
+      "relative_speed": "~1x",
+      "english_only": false
     }
   ]
   

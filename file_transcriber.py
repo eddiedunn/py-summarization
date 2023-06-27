@@ -2,6 +2,7 @@ import whisper
 import os
 import json
 import sys
+import argparse
 import fitz
 import pyperclip
 
@@ -17,7 +18,7 @@ class FileTranscriber:
         filename, extension = os.path.splitext(filename_with_extension)
 
         text_to_return = ""
-        if extension.lower() in ['.mp3', '.wav', '.mp4', '.avi', '.mov', '.flv', '.wmv']:
+        if extension.lower() in ['.mp3', '.wav', '.mp4', '.avi', '.mov', '.flv', '.wmv', '.mkv']:
             # transcribe audio/video file
             speech_to_text = whisper.load_model(self.whisper_model_name)
             text_to_return = speech_to_text.transcribe(file_to_transcribe)["text"]
@@ -63,7 +64,16 @@ class FileTranscriber:
         
         return text
     
-def main(file_to_transcribe):
+def is_av_file(filename, transcribe_all=False):
+    """Check if a file should be transcribed."""
+    if not transcribe_all:
+        if filename.lower().endswith(('.mp3', '.wav', '.mp4', '.avi', '.mov', '.flv', '.wmv', '.mkv')):
+            return True
+    else:
+        return True
+    return False
+
+def main(args):
     # Load settings from 'settings.json'
     with open('settings.json', 'r') as settings_file:
         settings = json.load(settings_file)
@@ -74,13 +84,25 @@ def main(file_to_transcribe):
     # Initialize the FileTranscriber
     transcriber = FileTranscriber(dest_dir)
 
-    # Perform the file transcription
-    return transcriber.transcribe(file_to_transcribe)
+    # Check if the input is a directory or a file
+    if os.path.isdir(args.file_or_dir):
+        # If it's a directory, transcribe each file in it
+        for root, dirs, files in os.walk(args.file_or_dir):
+            for file in files:
+                if is_av_file(file, args.all_files):
+                    file_path = os.path.join(root, file)
+                    print(transcriber.transcribe(file_path))  # transcribe the file
+    else:
+        # If it's a single file, just transcribe it
+        if is_av_file(args.file_or_dir, args.all_files):
+            print(transcriber.transcribe(args.file_or_dir))  # transcribe the file
+
 
 # If this script is being run from the command line
 if __name__ == '__main__':
-    # Ensure a file path was provided
-    if len(sys.argv) < 2:
-        print("Please provide a file path to be transcribed.")
-    else:
-        print(main(sys.argv[1]))  # sys.argv[1] contains the second argument provided to the script
+    parser = argparse.ArgumentParser(description='Transcribe files. Only Audio/Video files are transcribed by default.')
+    parser.add_argument('file_or_dir', type=str, help='File or directory to transcribe.')
+    parser.add_argument('--all_files', action='store_true', help='Transcribe all files, not only audio/video.')
+    args = parser.parse_args()
+
+    main(args)  # Pass the arguments to main

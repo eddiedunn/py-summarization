@@ -6,7 +6,8 @@ import os
 from file_summarizer import FileSummarizer
 from file_downloader import FileDownloader
 from file_transcriber import FileTranscriber
-
+from yt_processor   import YouTubeProcessor
+from urllib.parse import urlparse
 
 
 from dotenv import load_dotenv
@@ -234,7 +235,11 @@ class App:
         is_clipboard = False
         if source_type == 'URL':
             url = self.url_input_field.get()
-
+            # youtube video and summarize, pass off to youtube processor
+            if self.is_youtube_url(url) and self.transcribe_var.get() == 0:
+                yt_processor = YouTubeProcessor(self.dest_dir)
+                yt_processor.summarize(url)
+                return
             if url.startswith('/'):
                 full_content_path = url
             else:
@@ -256,7 +261,11 @@ class App:
         if self.transcribe_var.get() == 0:
             self.summarize_file(full_content_path)
 
-            
+    def is_youtube_url(self, url):
+        parsed_url = urlparse(url)
+        domain = parsed_url.netloc.lower()
+        return 'youtube.com' in domain
+    
     def summarize_file(self, full_content_path):
         summarizer = FileSummarizer(self.model_var.get(), self.max_tokens)
         summary_path = summarizer.summarize_file(full_content_path, 

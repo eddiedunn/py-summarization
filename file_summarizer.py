@@ -8,7 +8,7 @@ from langchain import PromptTemplate
 from langchain.chains.summarize import load_summarize_chain
 from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-
+from urllib.parse import urlparse
 
 
 
@@ -159,6 +159,11 @@ class FileSummarizer:
             f.write(summary_text)
 
         return full_output_path
+    
+    def is_youtube_url(url):
+        parsed_url = urlparse(url)
+        domain = parsed_url.netloc.lower()
+        return 'youtube.com' in domain
     
 def main(full_content_path):
     # Load settings from 'settings.json'

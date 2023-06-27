@@ -8,7 +8,7 @@ import pyperclip
 class FileTranscriber:
 
     def __init__(self, dest_dir):
-        self.model_name = "base"
+        self.whisper_model_name = "base"
         self.dest_dir = dest_dir
         
 
@@ -19,7 +19,7 @@ class FileTranscriber:
         text_to_return = ""
         if extension.lower() in ['.mp3', '.wav', '.mp4', '.avi', '.mov', '.flv', '.wmv']:
             # transcribe audio/video file
-            speech_to_text = whisper.load_model(self.model_name)
+            speech_to_text = whisper.load_model(self.whisper_model_name)
             text_to_return = speech_to_text.transcribe(file_to_transcribe)["text"]
         elif is_clipboard:
             if not filename:

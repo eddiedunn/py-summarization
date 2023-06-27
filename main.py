@@ -8,6 +8,7 @@ from file_downloader import FileDownloader
 from file_transcriber import FileTranscriber
 
 
+
 from dotenv import load_dotenv
 
 class App:
@@ -233,6 +234,7 @@ class App:
         is_clipboard = False
         if source_type == 'URL':
             url = self.url_input_field.get()
+
             if url.startswith('/'):
                 full_content_path = url
             else:
@@ -276,6 +278,7 @@ class App:
             with open(summary_path, 'r') as file_content:
                 text = file_content.read()
             text_area.insert(tk.INSERT, text)
+
 
 
 

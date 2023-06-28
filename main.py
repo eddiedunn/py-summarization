@@ -235,11 +235,18 @@ class App:
         is_clipboard = False
         if source_type == 'URL':
             url = self.url_input_field.get()
-            # youtube video and summarize, pass off to youtube processor
-            if self.is_youtube_url(url) and self.transcribe_var.get() == 0:
-                yt_processor = YouTubeProcessor(self.dest_dir)
-                yt_processor.summarize(url)
-                return
+            # youtube video pass off to youtube processor
+            if self.is_youtube_url(url): 
+                yt_processor = YouTubeProcessor(self.dest_dir, self.summary_method_var.get(),self.model_var.get(), self.max_tokens)
+                # if summarize is selected, summarize the video
+                if self.transcribe_var.get() == 0:
+                    summary_path = yt_processor.summarize_video(url)
+                    self.open_file(summary_path)
+                else: # Teanscribe is selected, transcribe the video
+                    yt_processor.transcribe_video(url)
+                
+                return # don't continue with the rest of the function
+            
             if url.startswith('/'):
                 full_content_path = url
             else:

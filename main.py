@@ -6,6 +6,7 @@ import os
 from file_summarizer import FileSummarizer
 from file_downloader import FileDownloader
 from file_transcriber import FileTranscriber
+from file_speaker import FileSpeaker
 from yt_processor   import YouTubeProcessor
 from urllib.parse import urlparse
 
@@ -106,6 +107,10 @@ class App:
         self.transcribe_checkbox = ttk.Checkbutton(self.root, text="Transcribe Only", variable=self.transcribe_var, command=self.update_button_text)
         self.transcribe_checkbox.grid(row=8, column=0, columnspan=2, **padding)
 
+        # Read output checkbox
+        self.speak_output_var = tk.IntVar()
+        self.speak_output_checkbox = ttk.Checkbutton(self.root, text="Speak Output", variable=self.speak_output_var)
+        self.speak_output_checkbox.grid(row=9, column=0, columnspan=2, **padding)
 
         # Load previous settings if available
         if os.path.isfile("settings.json"):
@@ -240,11 +245,14 @@ class App:
                 yt_processor = YouTubeProcessor(self.dest_dir, self.summary_method_var.get(),self.model_var.get(), self.max_tokens)
                 # if summarize is selected, summarize the video
                 if self.transcribe_var.get() == 0:
-                    summary_path = yt_processor.summarize_video(url)
-                    self.open_file(summary_path)
+                    output_file = yt_processor.summarize_video(url)
+                    self.open_file(output_file)
                 else: # Teanscribe is selected, transcribe the video
-                    yt_processor.transcribe_video(url)
+                    output_file = yt_processor.transcribe_video(url)
                 
+                if(self.speak_output_var.get() == 1):
+                    speaker = FileSpeaker(output_file)
+                    speaker.speak()
                 return # don't continue with the rest of the function
             
             if url.startswith('/'):
@@ -263,10 +271,14 @@ class App:
             full_content_path = self.file_path
 
         transcriber = FileTranscriber(self.dest_dir)
-        full_content_path = transcriber.transcribe(full_content_path, is_clipboard)
+        output_path = transcriber.transcribe(full_content_path, is_clipboard)
 
         if self.transcribe_var.get() == 0:
-            self.summarize_file(full_content_path)
+            output_path = self.summarize_file(output_path)
+
+        if(self.speak_output_var.get() == 1):
+            speaker = FileSpeaker(output_path)
+            speaker.speak()
 
     def is_youtube_url(self, url):
         parsed_url = urlparse(url)
@@ -279,6 +291,7 @@ class App:
                                                  self.summary_method_var.get(), 
                                                  self.dest_dir)
         self.open_file(summary_path)
+        return summary_path
 
     def open_file(self, summary_path):
         if summary_path:

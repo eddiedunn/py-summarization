@@ -20,9 +20,11 @@ class YouTubeProcessor:
         self.max_tokens = max_tokens
         self.timestamp_regex = r'\b\d{1,2}:\d{2}\b'
         self.whisper_model_name = 'base'
+        self.temp_dir = '/tmp'
 
     def transcribe_video(self, url):
-        self.download_yt_transcript(url)
+        output_path = self.download_yt_transcript(url)
+        return output_path
 
     def summarize_video(self, url):
         video_id = self.get_video_id(url)
@@ -38,10 +40,11 @@ class YouTubeProcessor:
     
     def summarize_with_timestamps(self, url, details):
         downloaded_file = self.download_video(url)
-        timestamps = self.extract_timestamps(details['description'])
+        timestamps, topics = self.extract_timestamps_and_text(details['description'])
         extracted = self.extract_audio_segments(downloaded_file, timestamps)
         speech_to_text = whisper.load_model(self.whisper_model_name)
         summaries = []
+        index=0
         for segment in extracted:
             segment_full_text = segment+'.txt'
             text = speech_to_text.transcribe(segment)["text"]
@@ -51,10 +54,11 @@ class YouTubeProcessor:
 
             with open(summary_file, 'r') as f:
                 summary = f.read()
-
+            summaries.append('\n-----------------------------------------------------------------------------------\n')    
+            summaries.append(topics[index]+':\n')          
             summaries.append(summary)
-            summaries.append('--------------------------------------------------------------------------\n')
-
+            #summaries.append('--------------------------------------------------------------------------\n')
+            index+=1
 
         file_path = self.concatenate_and_save(summaries, downloaded_file)
 
@@ -63,31 +67,21 @@ class YouTubeProcessor:
     def concatenate_and_save(self, strings_list, file_path):
         concatenated_string = ' '.join(strings_list)
         file_name = file_path.split('/')[-1].split('.')[0] + '-summary.txt'
-        new_file_path = '/'.join(file_path.split('/')[:-1]) + '/' + file_name
+
+        new_file_path = self.dest_dir + '/' + file_name
 
         with open(new_file_path, 'w') as file:
             file.write(concatenated_string)
 
         return new_file_path
 
-    # def extract_audio(self, file_path, start_time, end_time, output_path):
-    #     audio = AudioSegment.from_file(file_path)
 
-    #     # pydub calculates in milliseconds
-    #     start_time = start_time * 1000  # convert to milliseconds
-    #     end_time = end_time * 1000  # convert to milliseconds
-
-    #     extracted = audio[start_time:end_time]
-
-
-    #     # save the result
-    #     extracted.export(output_path, format="webm")
 
     def call_summarizer(self, full_path):
         summarizer = FileSummarizer(self.model_var, self.max_tokens)
         summary_path = summarizer.summarize_file(full_path, 
                                                 self.summary_method, 
-                                                self.dest_dir)
+                                                self.temp_dir)
 
         return summary_path
     
@@ -130,6 +124,20 @@ class YouTubeProcessor:
         matches = re.findall(pattern, description)
         return len(matches) > 0
 
+    def extract_timestamps_and_text(self, description):
+        # The pattern matches a string that starts with one or two digits, followed by a colon, 
+        # followed by two digits, and then a space.
+        pattern = re.compile(r'\b\d{1,2}:\d{2}\b')
+
+        # Find all timestamps
+        timestamps = re.findall(pattern, description)
+
+        # To get the topic for each segment 
+        # Split the text by timestamps, removing new lines, skip first element
+        topics = [text.rstrip('\n') for text in re.split(pattern, description)[1:]]
+
+        return timestamps, topics
+
     def extract_timestamps(self, description):
         # The pattern matches a string that starts with one or two digits, followed by a colon, 
         # followed by two digits, and then a space.
@@ -155,7 +163,7 @@ class YouTubeProcessor:
             segment = audio[start_time:end_time]
 
             # Define the output file name
-            output_file = f'{self.dest_dir}/segment_{i + 1}.webm'
+            output_file = f'{self.temp_dir}/segment_{i + 1}.webm'
 
             # Save the segment
             segment.export(output_file, format='webm')
@@ -174,7 +182,7 @@ class YouTubeProcessor:
 
     def download_video(self, url):
         ydl_opts = {
-            'outtmpl': f'{self.dest_dir}/%(title)s.%(ext)s',
+            'outtmpl': f'{self.temp_dir}/%(title)s.%(ext)s',
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(url, download=False)
@@ -208,7 +216,7 @@ class YouTubeProcessor:
         
         file_name = f"{safe_channel_title}_{safe_video_title}.txt"
 
-        full_path = os.path.join(self.dest_dir, file_name)
+        full_path = os.path.join(self.temp_dir, file_name)
 
         # Save the transcript to a file
         with open( full_path, 'w', encoding='utf-8') as f:

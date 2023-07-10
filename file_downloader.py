@@ -100,7 +100,7 @@ class FileDownloader:
             full_filepath = yt_processor.download_yt_transcript(parsed_url)
         else: # assume it's a web page or downloadable file
             full_filepath = self.get_url_content(url)
-            full_filepath = self.convert_to_text(full_filepath)
+            #full_filepath = self.convert_to_text(full_filepath)
 
         return full_filepath
 

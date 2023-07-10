@@ -3,6 +3,7 @@ token.json
 settings.json
 *.txt
 .python-version
+*.wav
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

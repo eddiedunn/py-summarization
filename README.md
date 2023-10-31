@@ -62,10 +62,17 @@ scoop install ffmpeg
 
 ```
 
+You will also need to install portaudio if on a Mac
+
+```bash
+brew install portaudio
+```
+
+
 You can install the python dependencies by running the following command:
 
 ```bash
-pip install python-dotenv openai-whisper pymupdf pyperclip bs4 youtube-transcript-api google-api-python-client langchain openai
+pip install python-dotenv openai-whisper pymupdf pyperclip bs4 youtube-transcript-api google-api-python-client langchain openai yt_dlp pydub nltk pyaudio soundfile sounddevice git+https://github.com/suno-ai/bark.git
 ```
 
 ## Usage
